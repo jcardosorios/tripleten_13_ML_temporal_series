@@ -1,3 +1,6 @@
-.venv
-catboost_info
-datasets
+.venv/
+.DS_Store
+*.csv  # Si tus datos son grandes y no deben ser versionados
+*.zip
+*.pkl  # Para modelos guardados, si son grandes
+*.ipynb_checkpoints/
