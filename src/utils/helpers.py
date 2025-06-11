@@ -1,4 +1,5 @@
 import time
+import os
 import pandas as pd
 from sklearn.metrics import mean_squared_error
 from sklearn.base import BaseEstimator
@@ -64,3 +65,24 @@ def test_parameters(model: BaseEstimator, param_grid: dict, features_train: pd.D
     print("Mejores hiperparámetros encontrados:")
     print(best_params)
     return best_params
+
+def results_to_parquet(result: pd.DataFrame, path: str):
+    """
+    Abre archivo parquet para actualizar su información y 
+    luego volver a guardarlo.
+    Párametros:
+    result (pd.DataFrame): Columna de resultados.
+    path (str): Ruta del archivo parquet.
+    """
+    if not os.path.exists(path):
+        result.to_parquet(path)
+        print(f"Archivo creado y guardado en: {path}")
+    else:
+        df = pd.read_parquet(path)
+
+        for col in result.columns:
+            # Actualiza o crea la columna con alineación por índice
+            df[col] = result[col]
+
+        df.to_parquet(path)
+        print(f"Archivo actualizado en: {path}")
