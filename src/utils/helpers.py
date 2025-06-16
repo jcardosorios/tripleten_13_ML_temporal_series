@@ -66,7 +66,7 @@ def test_parameters(model: BaseEstimator, param_grid: dict, features_train: pd.D
     print(best_params)
     return best_params
 
-def results_to_parquet(result: pd.DataFrame, path: str):
+def predictions_to_parquet(result: pd.DataFrame, path: str):
     """
     Abre archivo parquet para actualizar su información y 
     luego volver a guardarlo.
@@ -86,3 +86,27 @@ def results_to_parquet(result: pd.DataFrame, path: str):
 
         df.to_parquet(path)
         print(f"Archivo actualizado en: {path}")
+
+
+def results_to_parquet(results: list , model_name: str, path: str):
+    """
+    Guarda los resultados de las predicciones en un archivo parquet.
+    Parámetros:
+    results (dict): Diccionario con los resultados de las predicciones.
+    model_name (str): Nombre del modelo.
+    path (str): Ruta del archivo parquet.
+    """
+    if not os.path.exists(path):
+        df = pd.DataFrame(columns=['model', 'training_time', 'prediction_time', 'rmse_test'])
+        df.loc[len(df)] = [model_name, results[0], results[1], results[2]]
+        df.to_parquet(path, index=False)
+        print(f"Archivo creado y guardado en: {path}")
+    else:
+        df = pd.read_parquet(path)
+        if model_name in df['model'].values:
+            df.loc[df['model'] == model_name, ['training_time', 'prediction_time', 'rmse_test']] = [results[0], results[1], results[2]]
+            print(f"Fila para '{model_name}' actualizada en: {path}")
+        else:
+            df.loc[len(df)] = [model_name, results[0], results[1], results[2]]
+            print(f"Nueva fila para '{model_name}' agregada en: {path}")
+        df.to_parquet(path, index=False)

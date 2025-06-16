@@ -73,7 +73,6 @@ def plot_model_comparison(models_df: pd.DataFrame, save_path: str = None):
     ax1.legend(loc='upper left')
 
     ax2 = ax1.twinx()
-    ax2.plot(models_df_sorted['model'], models_df_sorted['rmse_train'], marker='o', color='green', label='RMSE de entrenamiento')
     ax2.plot(models_df_sorted['model'], models_df_sorted['rmse_test'], marker='o', color='red', label='RMSE de prueba', linewidth=2)
     ax2.set_ylabel('RMSE', color='red')
     ax2.tick_params(axis='y', labelcolor='red')
